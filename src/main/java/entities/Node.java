@@ -43,6 +43,14 @@ public class Node implements OutputFormat {
         return String.format("%d;%d;%d",idX, idY, length);
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getIdX() {
         return idX;
     }

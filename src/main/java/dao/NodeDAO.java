@@ -22,5 +22,7 @@ public interface NodeDAO {
 
     //delete
     boolean removeNode(int id) throws SQLException;
-    boolean removeListOfNodes(List<Node> nodes) throws SQLException;
+    boolean removeListOfNodes(List<Node> nodes, boolean isCallFromCleanUpMethod) throws SQLException;
+    //remove all data from table
+    boolean cleanUpNodeTable();
 }

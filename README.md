@@ -1,5 +1,5 @@
 # dbbest.com.task
-Dijkstra algorithm and DB H2.
+Main algorithm and DB H2.
 
 ### Java application must answers the following questions: 
 1) Does the route between two points (id-A and id-B) exist?

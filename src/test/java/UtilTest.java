@@ -1,7 +1,13 @@
-import Dijkstra.Main;
+import Main.Main;
 import Utils.Util;
+import entities.Node;
+import entities.Route;
 import org.junit.Test;
+import service.NodeService;
+import service.RouteService;
+
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class UtilTest {
     //path to correct files
@@ -15,8 +21,8 @@ public class UtilTest {
     private static final String csvNodesFileIncorrectTestData3 = "src/test/resources/pipeline_system_incorrect_test_data3.csv";
 
     //file paths for tests without errors in files
-    private static final String csvSetOfPointsEmptyToDelete = "src/test/resources/SetOfPointsEmpty.csv";
-    private static final String csvSetOfPointsNonEmptyToDelete = "src/test/resources/SetOfPointsNonEmpty.csv";
+    private static final String csvSetOfPointsEmptyToDelete = "src/test/resources/SetOfPointsEmptyToDelete.csv";
+    private static final String csvSetOfPointsNonEmptyToDelete = "src/test/resources/SetOfPointsNonEmptyToDelete.csv";
 
     private static final String csvSetOfPointsUploadEmpty="src/test/resources/SetOfPointsUploadEmpty.csv";
     private static final String csvSetOfPointsUploadNonEmpty="src/test/resources/SetOfPointsUploadNonEmpty.csv";
@@ -43,17 +49,17 @@ public class UtilTest {
     }
     @Test(expected = IllegalArgumentException.class)
     public void getFromIncorrect1LocalFilesAndFindResultTest(){
-        boolean actual= util.getFromLocalFilesAndFindResult(csvNodesFileIncorrectTestData1, Main.getCsvRouteFile(), Main.getCsvResultFile());
+        boolean actual= util.getFromLocalFilesAndFindResult(csvNodesFileIncorrectTestData1, csvRouteFile, csvResultFile);
         assertFalse("getting incorrect data from local files and find min distance", actual);
     }
     @Test
     public void getFromIncorrect2LocalFilesAndFindResultTest(){
-        boolean actual= util.getFromLocalFilesAndFindResult(csvNodesFileIncorrectTestData2, Main.getCsvRouteFile(), Main.getCsvResultFile());
+        boolean actual= util.getFromLocalFilesAndFindResult(csvNodesFileIncorrectTestData2, csvRouteFile, csvResultFile);
         assertTrue("getting incorrect data from local files and find min distance", actual);
     }
     @Test(expected = IllegalArgumentException.class)
     public void getFromIncorrect3LocalFilesAndFindResultTest(){
-        boolean actual= util.getFromLocalFilesAndFindResult(csvNodesFileIncorrectTestData3, Main.getCsvRouteFile(), Main.getCsvResultFile());
+        boolean actual= util.getFromLocalFilesAndFindResult(csvNodesFileIncorrectTestData3, csvRouteFile, csvResultFile);
         assertFalse("getting incorrect data from local files and find min distance", actual);
     }
 
@@ -112,10 +118,44 @@ public class UtilTest {
     @Test
     public void deleteSetOfPointsNonEmptyToDBTest(){
         boolean actual=util.deleteSetOfPointsToDB(csvSetOfPointsNonEmptyToDelete);
+        assertFalse(actual);
+    }
+
+    //testing function util.deleteAllNodesInDB();
+    @Test
+    public void deleteAllNodesInDBTest(){
+        boolean actual=util.deleteAllNodesInDB();
         assertTrue(actual);
     }
 
+    //testing function util.deleteAllRoutesInDB();
+    @Test
+    public void deleteAllRoutesInDBTest(){
+        boolean actual=util.deleteAllRoutesInDB();
+        assertTrue(actual);
+    }
 
+    //testing function nodeService.addNode(Node node)
+    @Test
+    public void addNodeTest(){
+        assertTrue(new NodeService().addNode(new Node(1000000, 1, 1, 10)));
+    }
+    //testing function nodeService.removeNode(int id)
+    @Test
+    public void removeNodeTest(){
+        assertTrue(new NodeService().removeNode(1000000));
+    }
+
+    //testing function routeService.addRoute(Node node)
+    @Test
+    public void addRouteTest(){
+        assertTrue(new RouteService().addRoute(new Route(1000000, 1, 1)));
+    }
+    //testing function routeService.removeRoute(int id)
+    @Test
+    public void removeRouteTest(){
+        assertTrue(new RouteService().removeRoute(1000000));
+    }
 
 
 }

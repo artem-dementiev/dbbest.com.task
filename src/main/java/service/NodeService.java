@@ -102,21 +102,32 @@ public class NodeService implements NodeDAO {
     }
 
     @Override
-    public boolean removeListOfNodes(List<Node> nodes) {
+    public boolean removeListOfNodes(List<Node> nodes, boolean isCallFromCleanUpMethod) {
         int count =0;
-        String sql = "DELETE FROM Node WHERE idX=? AND idY=? AND length=?";
+        String sql = !isCallFromCleanUpMethod ? "DELETE FROM Node WHERE idX=? AND idY=? AND length=?" : "DELETE FROM Node where id=?";
         try (Connection conn = initializeDatabase();PreparedStatement ps = conn.prepareStatement(sql)) {
             for(Node item : nodes){
-                ps.setInt(1, item.getIdX());
-                ps.setInt(2, item.getIdY());
-                ps.setInt(3, item.getLength());
+                if(!isCallFromCleanUpMethod){
+                    ps.setInt(1, item.getIdX());
+                    ps.setInt(2, item.getIdY());
+                    ps.setInt(3, item.getLength());
+                    LOGGER.info(String.format("Node with idX=%d and idY=%d and length=%d deleted in DB", item.getIdX(), item.getIdY(), item.getLength()));
+                }else {
+                    ps.setInt(1, item.getId());
+                    LOGGER.info(String.format("Node with id=%d deleted in DB", item.getId()));
+                }
                 count+=ps.executeUpdate();
-                System.out.println("COUNT NODE:"+count);
-                LOGGER.info(String.format("Node with idX=%d and idY=%d and length=%d deleted in DB", item.getIdX(), item.getIdY(), item.getLength()));
             }
         } catch (SQLException e) {
             LOGGER.error(e);
         }
         return count != 0;
+    }
+
+    @Override
+    public boolean cleanUpNodeTable() {
+        LOGGER.info("Method 'cleanUpNodeTable' started");
+        NodeService nodeService = new NodeService();
+        return nodeService.removeListOfNodes(nodeService.getAllNode(), true);
     }
 }

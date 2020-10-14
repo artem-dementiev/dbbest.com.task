@@ -1,4 +1,4 @@
-package Dijkstra;
+package Main;
 
 import Utils.Util;
 import org.apache.log4j.BasicConfigurator;
@@ -16,6 +16,10 @@ public class Main {
 
     //logger
     private static final Logger LOGGER = Logger.getLogger(Main.class);
+
+    //paths to files which consists Initial data (as in the example)
+    static final String CSV_NODES_FILE = "src/main/resources/pipeline_system_DEFAULT_DATA.csv";
+    static final String CSV_ROUTE_FILE = "src/main/resources/set_of_points_DEFAULT_DATA.csv";
 
     //file paths
     static String csvNodesFile = "src/main/resources/pipeline_system.csv";
@@ -84,9 +88,25 @@ public class Main {
                     util.getResultFromFileAndDisplay(csvResultFile);
                     break;
                 case 10:
-                    LOGGER.info("You are exited from the application");
+                    LOGGER.info("Delete all nodes in DB");
+                    util.deleteAllNodesInDB();
+                    break;
+                case 11:
+                    LOGGER.info("Delete all routes in DB");
+                    util.deleteAllRoutesInDB();
+                    break;
+                case 12:
+                    LOGGER.info("You exited from the application");
                     in.close();
                     System.exit(0);
+                    break;
+                case 13:
+                    LOGGER.info("Reset DB to default settings ");
+                    util.deleteAllNodesInDB();
+                    util.deleteAllRoutesInDB();
+                    util.uploadPipelineSystemToDB(CSV_NODES_FILE);
+                    util.uploadSetOfPointsToDB(CSV_ROUTE_FILE);
+                    util.getFromDBAndFindResult(csvResultFile);
                     break;
                 case 0:
                     LOGGER.info("Wrong choice!");
@@ -116,7 +136,10 @@ public class Main {
         System.out.println("7 - delete nodes in DB which are specified in the file 'pipeline_system_to_delete.csv'");
         System.out.println("8 - delete routes in DB which are specified in the file 'set_of_points_to_delete.csv'");
         System.out.println("9 - get result file and display or re-write data to another file");
-        System.out.println("10 - exit");
+        System.out.println("10 - delete all nodes in DB");
+        System.out.println("11 - delete all routes in DB");
+        System.out.println("12 - exit");
+        System.out.println("13 - Reset the database to default settings (data provided in the task)");
         System.out.print("Choose: ");
         int choice=0;
         if(in.hasNextInt()){
@@ -126,7 +149,7 @@ public class Main {
             System.out.println("Wrong input! Try again!");
         }
 
-        return (choice > 0 && choice < 11) ? choice: 0;
+        return (choice > 0 && choice < 14) ? choice: 0;
     }
 
 }

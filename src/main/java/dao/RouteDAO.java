@@ -23,5 +23,7 @@ public interface RouteDAO {
 
     //delete
     boolean removeRoute(int id) throws SQLException;
-    boolean removeListOfRoutes(List<Route> routes) throws SQLException;
+    boolean removeListOfRoutes(List<Route> routes, boolean isCallFromCleanUpMethod) throws SQLException;
+    //remove all data from table
+    boolean cleanUpRouteTable();
 }

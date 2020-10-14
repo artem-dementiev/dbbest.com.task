@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * Supporting functions
  */
-public class Util {
+public final class Util {
     private static final Logger LOGGER = Logger.getLogger(Util.class);
 
     /**
@@ -26,7 +26,7 @@ public class Util {
     public boolean deletePipelineSystemToDB(String csvNodesFileToDelete) {
         List<Node> list = readNodeDataFromFile(csvNodesFileToDelete);
         NodeService dao = new NodeService();
-        return dao.removeListOfNodes(list);
+        return dao.removeListOfNodes(list, false);
     }
 
     /**
@@ -38,7 +38,7 @@ public class Util {
     public boolean deleteSetOfPointsToDB(String csvRouteFileToDelete) {
         List<Route> list = readRouteDataFromFile(csvRouteFileToDelete);
         RouteService dao = new RouteService();
-        return dao.removeListOfRoutes(list);
+        return dao.removeListOfRoutes(list,false);
     }
 
     /**
@@ -48,8 +48,7 @@ public class Util {
      */
     public boolean getSetOfPointsFromDBAndDisplay() {
         RouteService routeService = new RouteService();
-        List<Route> routes = new LinkedList<>();
-        routes = routeService.getAllRoute();
+        List<Route> routes = routeService.getAllRoute();
         return displayData(routes);
     }
 
@@ -60,8 +59,7 @@ public class Util {
      */
     public boolean getPipelineSystemFromDBAndDisplay() {
         NodeService nodeService = new NodeService();
-        List<Node> nodes = new LinkedList<>();
-        nodes = nodeService.getAllNode();
+        List<Node> nodes = nodeService.getAllNode();
         return displayData(nodes);
     }
 
@@ -187,7 +185,7 @@ public class Util {
      */
     private boolean createPriceMatrixAndGetResult(List<Node> nodes, List<Route> routes, String csvResultFile){
         if(nodes ==null || routes == null || routes.isEmpty()||nodes.isEmpty()){
-            System.out.println("No data available. Check for data in file or database!");
+            System.out.println("\nNo data available. Check for data in file or database!");
             LOGGER.info("No data available. Check for data in file or database!");
             return false;
         } else {
@@ -384,5 +382,13 @@ public class Util {
             LOGGER.error(e);
         }
         return false;
+    }
+
+    public boolean deleteAllNodesInDB() {
+        return new NodeService().cleanUpNodeTable();
+    }
+
+    public boolean deleteAllRoutesInDB() {
+        return new RouteService().cleanUpRouteTable();
     }
 }

@@ -83,7 +83,7 @@ public class RouteService implements RouteDAO {
     }
 
     @Override
-    public boolean removeRoute(int id) throws SQLException {
+    public boolean removeRoute(int id) {
         String sql = "DELETE FROM Route where id=?";
         try (Connection conn = initializeDatabase();PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -97,20 +97,31 @@ public class RouteService implements RouteDAO {
     }
 
     @Override
-    public boolean removeListOfRoutes(List<Route> routes) {
+    public boolean removeListOfRoutes(List<Route> routes, boolean isCallFromCleanUpMethod) {
         int count =0;
-        String sql = "DELETE FROM Route WHERE idX=? AND idY=?";
+        String sql = !isCallFromCleanUpMethod ? "DELETE FROM Route WHERE idX=? AND idY=?" : "DELETE FROM Route where id=?";
         try (Connection conn = initializeDatabase();PreparedStatement ps = conn.prepareStatement(sql)) {
             for(Route item : routes){
-                ps.setInt(1, item.getIdX());
-                ps.setInt(2, item.getIdY());
+                if(!isCallFromCleanUpMethod){
+                    ps.setInt(1, item.getIdX());
+                    ps.setInt(2, item.getIdY());
+                    LOGGER.info(String.format("Route with idX=%d and idY=%d deleted in DB", item.getIdX(), item.getIdY()));
+                }else {
+                    ps.setInt(1, item.getId());
+                    LOGGER.info(String.format("Route with id=%d deleted in DB", item.getId()));
+                }
                 count+=ps.executeUpdate();
-                System.out.println("COUNT ROUTE:"+count);
-                LOGGER.info(String.format("Route with idX=%d and idY=%d deleted in DB", item.getIdX(), item.getIdY()));
             }
         } catch (SQLException e) {
             LOGGER.error(e);
         }
         return count != 0;
+    }
+
+    @Override
+    public boolean cleanUpRouteTable() {
+        LOGGER.info("Method 'cleanUpRouteTable' started");
+        RouteService routeService = new RouteService();
+        return routeService.removeListOfRoutes(routeService.getAllRoute(), true);
     }
 }
