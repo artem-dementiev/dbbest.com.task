@@ -14,6 +14,8 @@ Main algorithm and DB H2.
 - log4j.properties - is a log4j configuration file;
 - pipeline_system_to_delete.csv - file which consists nodes which must be deleted; (fill in manually)
 - set_of_points_to_delete.csv - file which consists routes which must be deleted. (fill in manually)
+- pipeline_system_DEFAULT_DATA.csv - a separate file 'pipeline_system.csv' for dumping data in the database to its original form (as in the example)
+- set_of_points_DEFAULT_DATA.csv - a separate file 'set_of_points.csv' for dumping data in the database to its original form (as in the example)
 
 ### H2 database configuration
 
@@ -63,7 +65,9 @@ Item         | Description
 9.1| Displaying data on the console screen
 9.2| Writting data to another file (The program will ask you to specify the name of the file that will be located in the directory "src/main/resources/userFiles/filename")
 9.3| Return to main menu
-10 | Exit from application
-
+10 | Delete all nodes in DB
+11 | Delete all routes in DB
+12 | Exit from application
+13 | Reset the database to default data (data provided in the task)
 
 
